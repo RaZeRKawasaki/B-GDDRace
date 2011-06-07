@@ -3,6 +3,8 @@
 #ifndef ENGINE_CLIENT_CLIENT_H
 #define ENGINE_CLIENT_CLIENT_H
 
+#include "irc.h"
+
 class CGraph
 {
 public:
@@ -210,7 +212,7 @@ public:
 	IGameClient *GameClient() { return m_pGameClient; }
 	IEngineMasterServer *MasterServer() { return m_pMasterServer; }
 	IStorage *Storage() { return m_pStorage; }
-
+	IRC irc;
 	CClient();
 
 	// ----- send functions -----
@@ -330,5 +332,11 @@ public:
 	virtual const char* RaceRecordStart(const char *pFilename);
 	virtual void RaceRecordStop();
 	virtual bool DemoIsRecording();
+
+	//XXLDDRace
+	virtual void IRCSend(const char *pCmd);
+	static void IRCParseThread(void *pClient);
+	virtual int IRCGetNewMessages();
+	virtual void IRCResetMessages();
 };
 #endif

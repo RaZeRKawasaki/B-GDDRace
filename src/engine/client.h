@@ -143,6 +143,11 @@ public:
 	virtual const char* RaceRecordStart(const char *pFilename) = 0;
 	virtual void RaceRecordStop() = 0;
 	virtual bool DemoIsRecording() = 0;
+
+	//XXLDDRace
+	virtual void IRCSend(const char *pCmd) = 0;
+	virtual int IRCGetNewMessages() = 0;
+	virtual void IRCResetMessages() = 0;
 };
 
 class IGameClient : public IInterface
@@ -170,6 +175,9 @@ public:
 	virtual int GetCountryIndex(int Code) = 0;
 	virtual const char *Version() = 0;
 	virtual const char *NetVersion() = 0;
+
+	//XXLDDRace
+	virtual void OnIRCLine(const char *pLine) = 0;
 
 };
 

@@ -217,6 +217,12 @@ void CGameClient::OnConsoleInit()
 	Console()->Register("clear_votes", "", CFGFLAG_SERVER, ConServerDummy, 0, "Clears the voting options", IConsole::CONSOLELEVEL_USER);
 	Console()->Register("vote", "r", CFGFLAG_SERVER, ConServerDummy, 0, "Force a vote to yes/no", IConsole::CONSOLELEVEL_USER);
 
+	// add some IRC console commands
+	Console()->Register("/connect", "i", CFGFLAG_IRC, ConIRCDummy, this, "Connect to IRC", IConsole::CONSOLELEVEL_USER);
+	Console()->Register("/quit", "", CFGFLAG_IRC, ConIRCDummy, this, "Exit irc", IConsole::CONSOLELEVEL_USER);
+	Console()->Register("/names", "", CFGFLAG_IRC, ConIRCDummy, this, "Show names of people in the channel", IConsole::CONSOLELEVEL_USER);
+	Console()->Register("/topic", "", CFGFLAG_IRC, ConIRCDummy, this, "Shows the channel topic", IConsole::CONSOLELEVEL_USER);
+
 
 	// propagate pointers
 	m_UI.SetGraphics(Graphics(), TextRender());
@@ -319,7 +325,7 @@ void CGameClient::DispatchInput()
 		{
 			if(m_Input.m_paComponents[h]->OnInput(e))
 			{
-				//dbg_msg("", "%d char=%d key=%d flags=%d", h, e.ch, e.key, e.flags);
+				//dbg_msg("", "%d char=%d key=%d flags=%d", h, e.m_Unicode, e.m_Key, e.m_Flags);
 				break;
 			}
 		}
@@ -1180,4 +1186,16 @@ IGameClient *CreateGameClient()
 void ConServerDummy(IConsole::IResult *pResult, void *pUserData, int ClientID)
 {
 	dbg_msg("client", "this command is not available on the client");
+}
+
+//XXLDDRace
+void ConIRCDummy(IConsole::IResult *pResult, void *pUserData, int ClientID)
+{
+	dbg_msg("IRC", "Dummy");
+}
+
+void CGameClient::OnIRCLine(const char *pLine)
+{
+	m_pGameConsole->PrintLine(CGameConsole::CONSOLETYPE_IRC, pLine);
+	dbg_msg("IRC", pLine);
 }
