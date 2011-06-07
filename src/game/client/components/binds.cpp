@@ -122,6 +122,9 @@ void CBinds::SetDefaults()
 
 	if(g_Config.m_ClDDRaceBinds)
 		SetDDRaceBinds(false);
+
+	//XXLDDRace
+	Bind(KEY_F5, "toggle_irc_console");
 }
 
 void CBinds::OnConsoleInit()
