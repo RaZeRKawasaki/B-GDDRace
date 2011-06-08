@@ -464,6 +464,7 @@ void CHud::OnRender()
 		RenderVoting();
 	}
 	RenderRecord();
+	RenderIRCInfo();
 	RenderCursor();
 }
 
@@ -584,5 +585,25 @@ void CHud::RenderRecord()
 		TextRender()->Text(0, 5, 47, 6, aBuf, -1);
 		str_format(aBuf, sizeof(aBuf), "%02d:%05.2f", (int)m_PlayerRecord/60, m_PlayerRecord-((int)m_PlayerRecord/60*60));
 		TextRender()->Text(0, 53, 47, 6, aBuf, -1);
+	}
+}
+
+void CHud::RenderIRCInfo()
+{
+	char aBuf[64];
+	int messages = Client()->IRCGetNewMessages();
+	if (messages > 0)
+	{
+		if (time_get()/(time_freq()/2)%2 == 0)
+			TextRender()->TextColor(1.0f,0.0f,0.0f,1.0f);
+		else
+			TextRender()->TextColor(0.7f,0.2f,0.2f,1.0f);
+
+		if (messages == 1)
+			str_format(aBuf, sizeof(aBuf), "New IRC message!!!");
+		else
+			str_format(aBuf, sizeof(aBuf), "%i new IRC messages!!!", messages);
+		TextRender()->Text(0, 100, 40, 6, aBuf, -1);
+		TextRender()->TextColor(1,1,1,1); //set to white
 	}
 }

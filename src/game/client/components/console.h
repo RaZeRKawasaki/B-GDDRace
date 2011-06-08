@@ -54,6 +54,7 @@ class CGameConsole : public CComponent
 
 	CInstance m_LocalConsole;
 	CInstance m_RemoteConsole;
+	CInstance m_IRCConsole;
 
 	CInstance *CurrentConsole();
 	float TimeNow();
@@ -74,12 +75,16 @@ class CGameConsole : public CComponent
 	static void ConClearRemoteConsole(IConsole::IResult *pResult, void *pUserData, int ClientID);
 	static void ConDumpLocalConsole(IConsole::IResult *pResult, void *pUserData, int ClientID);
 	static void ConDumpRemoteConsole(IConsole::IResult *pResult, void *pUserData, int ClientID);
+	static void ConToggleIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID);
+	static void ConClearIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID);
+	static void ConDumpIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID);
 
 public:
 	enum
 	{
 		CONSOLETYPE_LOCAL=0,
 		CONSOLETYPE_REMOTE,
+		CONSOLETYPE_IRC,
 	};
 
 	CGameConsole();

@@ -46,6 +46,8 @@
 	#include <windows.h>
 #endif
 
+//XXLDDRace
+#include "irc.h"
 
 void CGraph::Init(float Min, float Max)
 {
@@ -2493,4 +2495,119 @@ void CClient::RaceRecordStop()
 bool CClient::DemoIsRecording()
 {
 	return m_DemoRecorder.IsRecording();
+}
+
+//XXLDDRace
+int CClient::IRCGetNewMessages()
+{
+	return irc.m_NewMessages;
+}
+
+void CClient::IRCResetMessages()
+{
+	irc.m_NewMessages = 0;
+}
+
+void CClient::IRCParseThread(void* pClient)
+{
+	CClient *pSelf = (CClient *) pClient;
+
+	const char* temp;
+	while (pSelf->irc.m_Connected)
+	{
+		thread_sleep(1);
+		temp = pSelf->irc.MainParser();
+		if (strcmp(temp, "") == 0)
+			continue;
+		pSelf->GameClient()->OnIRCLine(temp);
+
+		pSelf->irc.m_NewMessages += 1;
+	}
+
+	pSelf->irc.Leave();
+}
+
+void CClient::IRCSend(const char *pMsg)
+{
+	dbg_msg("IRC", pMsg);
+	char aBuf[512];
+
+	if (!g_Config.m_GfxIRC)
+	{
+		GameClient()->OnIRCLine("*** IRC is disabled. Settings->IRC->Enable IRC chat");
+		return;
+	}
+
+	if (pMsg[0] == '/')
+	{
+		if (strcmp(pMsg, "/connect") == 0)
+		{
+			if (irc.m_Connected)
+			{
+				str_format(aBuf, sizeof(aBuf), "*** Already connected to %s:%i. Disconnect first (/quit)", irc.m_IRCData.m_Server, irc.m_IRCData.m_Port);
+				GameClient()->OnIRCLine(aBuf);
+				return;
+			}
+
+			//set defaults
+			IRC::CIRCData ircTemp = {"nl.quakenet.org",
+							6667,
+							"#XXLDDRace",
+							"",
+							"XXLTest",
+							"IRC Teeworlds Client",};
+
+			//set setting values
+			str_copy(ircTemp.m_Server, g_Config.m_IRCServer, 32);
+			ircTemp.m_Port = atoi(g_Config.m_IRCPort);
+			str_copy(ircTemp.m_Channel, g_Config.m_IRCChannel, 32);
+			str_copy(ircTemp.m_ChannelKey, g_Config.m_IRCChannelKey, 32);
+			str_copy(ircTemp.m_Nick, g_Config.m_PlayerName, 32);
+			str_copy(ircTemp.m_RealName, "IRC Teeworlds Client", 32);
+			irc.m_IRCData = ircTemp;
+
+			//set socket and connect to server
+			const char *temp = irc.Init();
+			if (strcmp(temp, "") != 0)
+			{
+				GameClient()->OnIRCLine(temp);
+				return;
+			}
+
+			str_format(aBuf, sizeof(aBuf), "*** Connected to %s:%i", irc.m_IRCData.m_Server, irc.m_IRCData.m_Port);
+			GameClient()->OnIRCLine(aBuf);
+			irc.m_Connected = true;
+
+			void *pSaveThread = thread_create(IRCParseThread, this);
+#if defined(CONF_FAMILY_UNIX)
+			pthread_detach((pthread_t)pSaveThread);
+#endif
+		}
+		else if (strcmp(pMsg, "/names") == 0)
+		{
+			irc.Names();
+		}
+		else if (strcmp(pMsg, "/topic") == 0)
+		{
+			irc.Topic();
+		}
+		else if (strcmp(pMsg, "/quit") == 0)
+		{
+			irc.Quit(); //TODO: XXLTomate: reason
+			irc.m_Connected = false;
+			str_format(aBuf, sizeof(aBuf), "*** Disconnected from %s:%i", irc.m_IRCData.m_Server, irc.m_IRCData.m_Port);
+			GameClient()->OnIRCLine(aBuf);
+		}
+		else
+		{
+			str_format(aBuf, sizeof(aBuf), "*** No such command \"%s\"", pMsg);
+			GameClient()->OnIRCLine(aBuf);
+		}
+	}
+	else if (irc.m_Connected)
+	{
+		str_format(aBuf, sizeof(aBuf), "%s: %s", irc.m_IRCData.m_Nick, pMsg); //TODO: XXLTomate: its not always the Nick (if used?!)
+		irc.Send(pMsg);
+		GameClient()->OnIRCLine(aBuf);
+	}
 }

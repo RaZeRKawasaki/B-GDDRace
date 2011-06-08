@@ -46,6 +46,8 @@ private:
 	float m_ServerRecord;
 	float m_PlayerRecord;
 	bool m_DDRaceTimeReceived;
+
+	void RenderIRCInfo();
 };
 
 #endif

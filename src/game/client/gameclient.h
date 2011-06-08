@@ -253,6 +253,9 @@ public:
 	class CRaceDemo *m_pRaceDemo;
 	class CGhost *m_pGhost;
 
+	//XXLDDRace
+	virtual void OnIRCLine(const char *pLine);
+
 private:
 
 	class CTeamsCore m_Teams;
@@ -283,6 +286,7 @@ inline vec3 HslToRgb(vec3 HSL)
 	}
 }
 void ConServerDummy(IConsole::IResult *pResult, void *pUserData, int ClientID);
+void ConIRCDummy(IConsole::IResult *pResult, void *pUserData, int ClientID);
 
 extern const char *Localize(const char *Str);
 

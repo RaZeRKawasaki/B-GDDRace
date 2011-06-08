@@ -304,5 +304,6 @@ private:
 
 	// found in menus_settings.cpp
 	void RenderSettingsDDRace(CUIRect MainView);
+	void RenderSettingsIRC(CUIRect MainView); //XXLDDRace
 };
 #endif

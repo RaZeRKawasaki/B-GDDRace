@@ -47,6 +47,8 @@ CGameConsole::CInstance::CInstance(int Type)
 
 	if(Type == CGameConsole::CONSOLETYPE_LOCAL)
 		m_CompletionFlagmask = CFGFLAG_CLIENT;
+	else if (Type == CGameConsole::CONSOLETYPE_IRC)
+		m_CompletionFlagmask = CFGFLAG_IRC;
 	else
 		m_CompletionFlagmask = CFGFLAG_SERVER;
 
@@ -76,8 +78,10 @@ void CGameConsole::CInstance::ClearHistory()
 
 void CGameConsole::CInstance::ExecuteLine(const char *pLine)
 {
-	if(m_Type == CGameConsole::CONSOLETYPE_LOCAL)
+	if(m_Type == CGameConsole::CONSOLETYPE_LOCAL) //TODO: XXLTomate: check this
 		m_pGameConsole->m_pConsole->ExecuteLine(pLine, -1, IConsole::CONSOLELEVEL_CONFIG, 0, 0);
+	else if (m_Type == CGameConsole::CONSOLETYPE_IRC)
+		m_pGameConsole->Client()->IRCSend(pLine);
 	else
 	{
 		if(m_pGameConsole->Client()->RconAuthed())
@@ -105,7 +109,7 @@ void CGameConsole::CInstance::OnInput(IInput::CEvent Event)
 		{
 			if(m_Input.GetString()[0])
 			{
-				if(m_Type == CONSOLETYPE_LOCAL || m_pGameConsole->Client()->RconAuthed())
+				if(m_Type == CONSOLETYPE_LOCAL || m_pGameConsole->Client()->RconAuthed() || m_Type == CONSOLETYPE_IRC)
 				{
 					char *pEntry = m_History.Allocate(m_Input.GetLength()+1);
 					mem_copy(pEntry, m_Input.GetString(), m_Input.GetLength()+1);
@@ -154,7 +158,7 @@ void CGameConsole::CInstance::OnInput(IInput::CEvent Event)
 		}
 		else if(Event.m_Key == KEY_TAB)
 		{
-			if(m_Type == CGameConsole::CONSOLETYPE_LOCAL || m_pGameConsole->Client()->RconAuthed())
+			if(m_Type == CGameConsole::CONSOLETYPE_LOCAL || m_pGameConsole->Client()->RconAuthed() || m_Type == CONSOLETYPE_IRC)
 			{
 				m_CompletionChosen++;
 				m_CompletionEnumerationCount = 0;
@@ -220,7 +224,7 @@ void CGameConsole::CInstance::PrintLine(const char *pLine)
 }
 
 CGameConsole::CGameConsole()
-: m_LocalConsole(CONSOLETYPE_LOCAL), m_RemoteConsole(CONSOLETYPE_REMOTE)
+: m_LocalConsole(CONSOLETYPE_LOCAL), m_RemoteConsole(CONSOLETYPE_REMOTE), m_IRCConsole(CONSOLETYPE_IRC)
 {
 	m_ConsoleType = CONSOLETYPE_LOCAL;
 	m_ConsoleState = CONSOLE_CLOSED;
@@ -238,6 +242,8 @@ CGameConsole::CInstance *CGameConsole::CurrentConsole()
 {
 	if(m_ConsoleType == CONSOLETYPE_REMOTE)
 		return &m_RemoteConsole;
+	else if (m_ConsoleType == CONSOLETYPE_IRC)
+		return &m_IRCConsole;
 	return &m_LocalConsole;
 }
 
@@ -368,6 +374,8 @@ void CGameConsole::OnRender()
 	Graphics()->SetColor(0.2f, 0.2f, 0.2f,0.9f);
 	if(m_ConsoleType == CONSOLETYPE_REMOTE)
 		Graphics()->SetColor(0.4f, 0.2f, 0.2f,0.9f);
+	else if(m_ConsoleType == CONSOLETYPE_IRC)
+		Graphics()->SetColor(0.2f, 0.4f, 0.2f,0.9f);
 	Graphics()->QuadsSetSubset(0,-ConsoleHeight*0.075f,Screen.w*0.075f*0.5f,0);
 	QuadItem = IGraphics::CQuadItem(0, 0, Screen.w, ConsoleHeight);
 	Graphics()->QuadsDrawTL(&QuadItem, 1);
@@ -429,6 +437,8 @@ void CGameConsole::OnRender()
 			else
 				pPrompt = "NOT CONNECTED> ";
 		}
+		else if (m_ConsoleType == CONSOLETYPE_IRC)
+			pPrompt = "IRC> ";
 		TextRender()->TextEx(&Cursor, pPrompt, -1);
 
 		x = Cursor.m_X;
@@ -456,7 +466,7 @@ void CGameConsole::OnRender()
 		TextRender()->TextEx(&Cursor, aInputString+pConsole->m_Input.GetCursorOffset(), -1);
 
 		// render possible commands
-		if(m_ConsoleType == CONSOLETYPE_LOCAL || Client()->RconAuthed())
+		if(m_ConsoleType == CONSOLETYPE_LOCAL || Client()->RconAuthed() || m_ConsoleType == CONSOLETYPE_IRC)
 		{
 			if(pConsole->m_Input.GetString()[0] != 0)
 			{
@@ -667,6 +677,8 @@ void CGameConsole::PrintLine(int Type, const char *pLine)
 		m_LocalConsole.PrintLine(pLine);
 	else if(Type == CONSOLETYPE_REMOTE)
 		m_RemoteConsole.PrintLine(pLine);
+	else if (Type == CONSOLETYPE_IRC)
+		m_IRCConsole.PrintLine(pLine);
 }
 
 void CGameConsole::OnConsoleInit()
@@ -674,6 +686,7 @@ void CGameConsole::OnConsoleInit()
 	// init console instances
 	m_LocalConsole.Init(this);
 	m_RemoteConsole.Init(this);
+	m_IRCConsole.Init(this);
 
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 
@@ -686,10 +699,29 @@ void CGameConsole::OnConsoleInit()
 	Console()->Register("clear_remote_console", "", CFGFLAG_CLIENT, ConClearRemoteConsole, this, "Clear remote console", IConsole::CONSOLELEVEL_USER);
 	Console()->Register("dump_local_console", "", CFGFLAG_CLIENT, ConDumpLocalConsole, this, "Dump local console", IConsole::CONSOLELEVEL_USER);
 	Console()->Register("dump_remote_console", "", CFGFLAG_CLIENT, ConDumpRemoteConsole, this, "Dump remote console", IConsole::CONSOLELEVEL_USER);
+	Console()->Register("toggle_irc_console", "", CFGFLAG_CLIENT, ConToggleIRCConsole, this, "Toggle IRC console", IConsole::CONSOLELEVEL_USER);
+	Console()->Register("clear_irc_console", "", CFGFLAG_CLIENT, ConClearIRCConsole, this, "Clear IRC console", IConsole::CONSOLELEVEL_USER);
+	Console()->Register("dump_irc_console", "", CFGFLAG_CLIENT, ConDumpIRCConsole, this, "Dump IRC console", IConsole::CONSOLELEVEL_USER);
 }
 
 void CGameConsole::OnStateChange(int NewState, int OldState)
 {
 	if(NewState == IClient::STATE_OFFLINE)
 		m_RemoteConsole.ClearHistory();
+}
+
+void CGameConsole::ConToggleIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID)
+{
+	((CGameConsole *)pUserData)->Toggle(CONSOLETYPE_IRC);
+	((CGameConsole *)pUserData)->Client()->IRCResetMessages(); //TODO: XXLTomate this could be improved
+}
+
+void CGameConsole::ConClearIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID)
+{
+	((CGameConsole *)pUserData)->m_IRCConsole.ClearBacklog();
+}
+
+void CGameConsole::ConDumpIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID)
+{
+	((CGameConsole *)pUserData)->Dump(CONSOLETYPE_IRC);
 }
