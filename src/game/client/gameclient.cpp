@@ -222,7 +222,7 @@ void CGameClient::OnConsoleInit()
 	Console()->Register("/quit", "", CFGFLAG_IRC, ConIRCDummy, this, "Exit irc", IConsole::CONSOLELEVEL_USER);
 	Console()->Register("/names", "", CFGFLAG_IRC, ConIRCDummy, this, "Show names of people in the channel", IConsole::CONSOLELEVEL_USER);
 	Console()->Register("/topic", "", CFGFLAG_IRC, ConIRCDummy, this, "Shows the channel topic", IConsole::CONSOLELEVEL_USER);
-    Console()->Register("/away", "", CFGFLAG_IRC, ConIRCDummy, this, "test", IConsole::CONSOLELEVEL_USER);
+    Console()->Register("/away", "", CFGFLAG_IRC, ConIRCDummy, this, "Make you as Away", IConsole::CONSOLELEVEL_USER);
 
 	// propagate pointers
 	m_UI.SetGraphics(Graphics(), TextRender());

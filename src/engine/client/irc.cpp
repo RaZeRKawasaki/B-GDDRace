@@ -157,9 +157,32 @@ const char* IRC::MainParser()
 			SendLine("No such channel :", m_IRCData.m_Channel);
 			return "";
 		}
-	
-  
-	 //END OF ERROR'S ----------------------------------------------------------	
+	  else if (strcmp(pArgument[1], "432") == 0) //TODO: ERR_ERRONEUSNICKNAME
+		{
+			SendLine("Erroneous nickname");
+			str_format(aBuf, sizeof(aBuf), "*** Erroneous Nickname: Illegal characters");
+		    return aBuf;
+		}
+	  else if (strcmp(pArgument[1], "465") == 0) //TODO: ERR_YOUREBANNEDCREEP
+		{
+			SendLine("You are banned from this server");
+		    str_format(aBuf, sizeof(aBuf), "*** You are banned from this server");
+		    return aBuf;
+		}
+	  else if (strcmp(pArgument[1], "464") == 0) //TODO: ERR_PASSWDMISMATCH
+		{
+			SendLine("Password incorrect");
+		    str_format(aBuf, sizeof(aBuf), "*** Password incorrect");
+		    return aBuf;
+		}	
+	  else if (strcmp(pArgument[1], "381") == 0) //TODO: RPL_YOUREOPER
+		{
+			SendLine("You are now an IRC operator");
+		    str_format(aBuf, sizeof(aBuf), "*** You are now an IRC operator");
+		    return aBuf;
+		}	
+
+	  //END OF ERROR'S ----------------------------------------------------------	
 	 if (strcmp(pArgument[1], "001") == 0)
 		{
 			SendLine("JOIN %s :%s", m_IRCData.m_Channel, m_IRCData.m_ChannelKey);

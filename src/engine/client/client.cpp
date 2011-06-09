@@ -2591,17 +2591,15 @@ void CClient::IRCSend(const char *pMsg)
 		{
 			irc.Topic();
 		}
-		else if (strcmp(pMsg, "/away") == 0) //Away
+		else if (strcmp(pMsg, "/away") == 0)
 		{
 	
 	if (IRCGetNewMessages()) //TODO : Test function ...
 	{
 	irc.Away_bot();
 	
-	       char aBuf[128];
-		
-		   str_format(aBuf, sizeof(aBuf), "*** You are no longer marked as being away");
-		   GameClient()->OnIRCLine(aBuf);}
+		str_format(aBuf, sizeof(aBuf), "*** You are no longer marked as being away");
+		GameClient()->OnIRCLine(aBuf);}
 		}
 		else if (strcmp(pMsg, "/quit") == 0)
 		{
