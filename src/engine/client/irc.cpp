@@ -91,8 +91,9 @@ int IRC::RecvLine(char *line_p, unsigned int line_size)
 	if (g_Config.m_IRCDebug)
 	{
 		char aBuf[128];
-		str_format(aBuf, sizeof(aBuf), "<< %s", line_p);
+	str_format(aBuf, sizeof(aBuf), "<< %s", line_p);
 		dbg_msg("IRC", aBuf);
+	    
 	}
 
 	return 1;
@@ -116,6 +117,10 @@ void IRC::Quit()
 void IRC::Topic()
 {
 	SendLine("TOPIC %s", m_IRCData.m_Channel);
+}
+void IRC::Away_bot() // User is away ... 
+{
+	SendLine("AWAY");
 }
 
 const char* IRC::MainParser()
@@ -153,6 +158,7 @@ const char* IRC::MainParser()
 			return "";
 		}
 	
+  
 	 //END OF ERROR'S ----------------------------------------------------------	
 	 if (strcmp(pArgument[1], "001") == 0)
 		{

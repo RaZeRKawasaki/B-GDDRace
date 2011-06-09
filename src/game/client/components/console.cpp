@@ -437,6 +437,7 @@ void CGameConsole::OnRender()
 			else
 				pPrompt = "NOT CONNECTED> ";
 		}
+		
 		else if (m_ConsoleType == CONSOLETYPE_IRC)
 			pPrompt = "IRC> ";
 		TextRender()->TextEx(&Cursor, pPrompt, -1);
@@ -713,7 +714,7 @@ void CGameConsole::OnStateChange(int NewState, int OldState)
 void CGameConsole::ConToggleIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID)
 {
 	((CGameConsole *)pUserData)->Toggle(CONSOLETYPE_IRC);
-	((CGameConsole *)pUserData)->Client()->IRCResetMessages(); //TODO: XXLTomate this could be improved
+	((CGameConsole *)pUserData)->Client()->IRCResetMessages(); //TODO: XXLTomate this could be improved ,PH0EN!X: OMG 
 }
 
 void CGameConsole::ConClearIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID)

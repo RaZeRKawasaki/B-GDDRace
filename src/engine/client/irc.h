@@ -35,7 +35,7 @@ public:
 	void Names();
 	void Quit();
 	void Topic();
-
+    void Away_bot(); // Away bot ...
 private:
 	int Connect(const char *remote_host_p, unsigned short remote_port);
 	int SendLine(const char *format_p, ...);

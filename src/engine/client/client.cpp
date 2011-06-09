@@ -2550,7 +2550,7 @@ void CClient::IRCSend(const char *pMsg)
 			}
 
 			//set defaults
-			IRC::CIRCData ircTemp = {"nl.quakenet.org",
+			IRC::CIRCData ircTemp = {"uk.quakenet.org",
 							6667,
 							"#XXLDDRace",
 							"",
@@ -2590,6 +2590,18 @@ void CClient::IRCSend(const char *pMsg)
 		else if (strcmp(pMsg, "/topic") == 0)
 		{
 			irc.Topic();
+		}
+		else if (strcmp(pMsg, "/away") == 0) //Away
+		{
+	
+	if (IRCGetNewMessages()) //TODO : Test function ...
+	{
+	irc.Away_bot();
+	
+	       char aBuf[128];
+		
+		   str_format(aBuf, sizeof(aBuf), "*** You are no longer marked as being away");
+		   GameClient()->OnIRCLine(aBuf);}
 		}
 		else if (strcmp(pMsg, "/quit") == 0)
 		{
