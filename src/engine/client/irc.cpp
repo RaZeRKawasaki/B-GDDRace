@@ -138,26 +138,29 @@ const char* IRC::MainParser()
 
 	if (m_ArgumentCount > 2)
 	{
+	// ERROR'S !!!!!!!!!!!!!!!!!!!	
+	 if (strcmp(pArgument[1], "433") == 0) //TODO: ERR_NICKNAMEINUSE
+		{
+			SendLine("Nickname is already in use :", m_Nick); //TODO : LOL
+			strncat(m_Nick, "_", 1);
+			SendLine("NICK %s", m_Nick);
+			strcpy(m_IRCData.m_Nick, m_Nick);
+			return "";
+		}
+		else if (strcmp(pArgument[1], "403") == 0) //TODO: ERR_NOSUCHCHANNEL
+		{
+			SendLine("No such channel :", m_IRCData.m_Channel);
+			return "";
+		}
 		if (strcmp(pArgument[1], "001") == 0)
 		{
 			SendLine("JOIN %s :%s", m_IRCData.m_Channel, m_IRCData.m_ChannelKey);
 			str_format(aBuf, sizeof(aBuf), "*** Joined %s", m_IRCData.m_Channel);
 			return aBuf;
 		}
-		else if (strcmp(pArgument[1], "433") == 0)
-		{
-			SendLine("Nickname is already in use :", m_Nick);
-			strncat(m_Nick, "_", 1);
-			SendLine("NICK %s", m_Nick);
-			strcpy(m_IRCData.m_Nick, m_Nick);
-			return "";
-		}
-		else if (strcmp(pArgument[1], "403") == 0)
-		{
-			SendLine("No such channel :", m_IRCData.m_Channel);
-			return "";
-		}
-		else if (strcmp(pArgument[1], "353") == 0)
+		//END OF ERROR'S 
+		//AUTSCH !
+		else if (strcmp(pArgument[1], "353") == 0) //TODO: RPL_NAMREPLY
 		{
 			char aBuf[1024];
 			str_format(aBuf, sizeof(aBuf), "*** Users at %s: %s", m_IRCData.m_Channel, pArgument[5]+1);
@@ -165,7 +168,7 @@ const char* IRC::MainParser()
 				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[5+i]);
 			return aBuf;
 		}
-		else if (strcmp(pArgument[1], "332") == 0)
+		else if (strcmp(pArgument[1], "332") == 0) //TODO: RPL_TOPIC
 		{
 			char aBuf[1024];
 			str_format(aBuf, sizeof(aBuf), "*** Topic at %s: %s", m_IRCData.m_Channel, pArgument[4]+1);
@@ -173,7 +176,7 @@ const char* IRC::MainParser()
 				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[4+i]);
 			return aBuf;
 		}
-		else if (g_Config.m_IRCMotd && strcmp(pArgument[1], "372") == 0)
+		else if (g_Config.m_IRCMotd && strcmp(pArgument[1], "372") == 0) //TODO : RPL_MOTD
 		{
 			char aBuf[1024];
 			str_format(aBuf, sizeof(aBuf), "*** %s", pArgument[3]+1);
