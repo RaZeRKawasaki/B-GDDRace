@@ -159,9 +159,16 @@ const char* IRC::MainParser()
 		}
 	  else if (strcmp(pArgument[1], "432") == 0) //TODO: ERR_ERRONEUSNICKNAME
 		{
-			SendLine("Erroneous nickname");
-			str_format(aBuf, sizeof(aBuf), "*** Erroneous Nickname: Illegal characters");
+		char Fake_Name[32] = "BiGRace"; //Name Changet to :  BiGRace
+		str_format(m_Nick, sizeof(m_Nick), "%s", Fake_Name);
+		SendLine("NICK %s", m_Nick);
+		strcpy(m_IRCData.m_Nick, m_Nick);
+		SendLine("Erroneous nickname");
+		
+		str_format(aBuf, sizeof(aBuf), "*** Erroneous Nickname: Illegal characters, Name Changed to : BiGRace");
 		    return aBuf;
+	
+
 		}
 	  else if (strcmp(pArgument[1], "465") == 0) //TODO: ERR_YOUREBANNEDCREEP
 		{

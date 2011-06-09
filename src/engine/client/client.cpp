@@ -2598,6 +2598,7 @@ void CClient::IRCSend(const char *pMsg)
 	{
 	irc.Away_bot();
 	
+	       char aBuf[128];
 		str_format(aBuf, sizeof(aBuf), "*** You are no longer marked as being away");
 		GameClient()->OnIRCLine(aBuf);}
 		}
