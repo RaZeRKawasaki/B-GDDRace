@@ -146,9 +146,15 @@ const char* IRC::MainParser()
 		}
 		else if (strcmp(pArgument[1], "433") == 0)
 		{
+			SendLine("Nickname is already in use :", m_Nick);
 			strncat(m_Nick, "_", 1);
 			SendLine("NICK %s", m_Nick);
 			strcpy(m_IRCData.m_Nick, m_Nick);
+			return "";
+		}
+		else if (strcmp(pArgument[1], "403") == 0)
+		{
+			SendLine("No such channel :", m_IRCData.m_Channel);
 			return "";
 		}
 		else if (strcmp(pArgument[1], "353") == 0)
