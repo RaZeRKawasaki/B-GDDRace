@@ -138,7 +138,7 @@ const char* IRC::MainParser()
 
 	if (m_ArgumentCount > 2)
 	{
-	// ERROR'S !!!!!!!!!!!!!!!!!!!	
+	// ERROR'S ------------------------------------------------------------------
 	 if (strcmp(pArgument[1], "433") == 0) //TODO: ERR_NICKNAMEINUSE
 		{
 			SendLine("Nickname is already in use :", m_Nick); //TODO : LOL
@@ -152,14 +152,14 @@ const char* IRC::MainParser()
 			SendLine("No such channel :", m_IRCData.m_Channel);
 			return "";
 		}
-		if (strcmp(pArgument[1], "001") == 0)
+	
+	 //END OF ERROR'S ----------------------------------------------------------	
+	 if (strcmp(pArgument[1], "001") == 0)
 		{
 			SendLine("JOIN %s :%s", m_IRCData.m_Channel, m_IRCData.m_ChannelKey);
 			str_format(aBuf, sizeof(aBuf), "*** Joined %s", m_IRCData.m_Channel);
 			return aBuf;
 		}
-		//END OF ERROR'S 
-		//AUTSCH !
 		else if (strcmp(pArgument[1], "353") == 0) //TODO: RPL_NAMREPLY
 		{
 			char aBuf[1024];

@@ -267,15 +267,15 @@ function build(settings)
 	end
 
 	-- build client, server, version server and master server
-	client_exe = Link(client_settings, "XXLDDRace", game_shared, game_client,
+	client_exe = Link(client_settings, "B!GRace", game_shared, game_client,
 		engine, client, game_editor, zlib, pnglite, wavpack,
 		client_link_other, client_osxlaunch)
 
 	if arch == "amd64" then
-		server_exe = Link(server_settings, "XXLDDRace-Server_64", engine, server,
+		server_exe = Link(server_settings, "B!GRace-Server_64", engine, server,
 		game_shared, game_server, zlib, server_link_other)
 	else
-		server_exe = Link(server_settings, "XXLDDRace-Server_32", engine, server,
+		server_exe = Link(server_settings, "B!GRace-Server_32", engine, server,
 		game_shared, game_server, zlib, server_link_other)
 	end
 	
