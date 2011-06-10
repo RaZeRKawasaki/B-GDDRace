@@ -2598,8 +2598,8 @@ void CClient::IRCSend(const char *pMsg)
 	{
 	irc.Away_bot();
 	
-	       char aBuf[128];
-		str_format(aBuf, sizeof(aBuf), "*** You are no longer marked as being away");
+	  
+		str_format(aBuf, sizeof(aBuf), "*** You have been marked as being away"); // Omg bad english !
 		GameClient()->OnIRCLine(aBuf);}
 		}
 		else if (strcmp(pMsg, "/quit") == 0)
@@ -2611,7 +2611,7 @@ void CClient::IRCSend(const char *pMsg)
 		}
 		else
 		{
-			str_format(aBuf, sizeof(aBuf), "*** No such command \"%s\"", pMsg);
+			str_format(aBuf, sizeof(aBuf), "*** No such command \"%s\"", pMsg); // TODO : Ph0en!X fix it !
 			GameClient()->OnIRCLine(aBuf);
 		}
 	}
