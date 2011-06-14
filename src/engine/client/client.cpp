@@ -44,10 +44,13 @@
 	#define _WIN32_WINNT 0x0501
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
+#else
+	#include "pthread.h" //XXLDDRace
 #endif
 
 //XXLDDRace
 #include "irc.h"
+#include "string.h"
 
 void CGraph::Init(float Min, float Max)
 {

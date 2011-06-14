@@ -40,15 +40,16 @@ private:
 	int Connect(const char *remote_host_p, unsigned short remote_port);
 	int SendLine(const char *format_p, ...);
 	int RecvLine(char *line_p, unsigned int line_size);
+	void OutFormat(char* pOut, char* pArg[IRC_MAX_ARGS], int argumentCount, int offset, char* prefix);
 
 	int	m_Sock;//the socket handle
-    int m_ConnectAttempts;
-    int m_ArgumentCount;
+	int m_ConnectAttempts;
+	int m_ArgumentCount;
 	char m_Buffer[512]; //the raw lines from IRC
-    char m_From[56];
-    char m_Nick[56];
-    char *m_Sender;
-    char *pArgument[IRC_MAX_ARGS]; //splited buffer by " "
-    char *pToken;
+	char m_From[56];
+	char m_Nick[56];
+	char *m_Sender;
+	char *pArgument[IRC_MAX_ARGS]; //splited buffer by " "
+	char *pToken;
 };
 #endif

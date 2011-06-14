@@ -13,10 +13,10 @@
 #endif
 
 #include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
-//#include <malloc.h>
-//#include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
+#include <malloc.h>
+#include <stdarg.h>
 
 #include <base/system.h>
 #include <engine/shared/config.h>
@@ -118,6 +118,25 @@ void IRC::Topic()
 	SendLine("TOPIC %s", m_IRCData.m_Channel);
 }
 
+void IRC::OutFormat(char* pOut, char* pArg[IRC_MAX_ARGS], int argumentCount, int offset, char* prefix)
+{			char aBuf[1024];
+			char bBuf[1024];
+			str_format(aBuf, sizeof(aBuf), "%s%s", prefix, pArg[offset]+1);
+
+			//pointer ping pong
+			for(int i = 1; i< argumentCount-offset; i++)
+				if (i % 2 == 0)
+					str_format(aBuf, sizeof(aBuf), "%s %s", bBuf, pArg[offset+i]);
+				else
+					str_format(bBuf, sizeof(bBuf), "%s %s", aBuf, pArg[offset+i]);
+
+			if (argumentCount % 2 == 0)
+				strcpy(pOut, aBuf);
+			else
+				strcpy(pOut, bBuf);
+			return;
+}
+
 void IRC::MainParser(char *pOut)
 {
 	char aBuf[1024];
@@ -156,28 +175,22 @@ void IRC::MainParser(char *pOut)
 		else if (strcmp(pArgument[1], "353") == 0)
 		{
 			char aBuf[1024];
-			str_format(aBuf, sizeof(aBuf), "*** Users at %s: %s", m_IRCData.m_Channel, pArgument[5]+1);
-			for(int i = 1; i < m_ArgumentCount-5; i++)
-				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[5+i]);
-			strcpy(pOut, aBuf);
+			str_format(aBuf, sizeof(aBuf), "*** Users at %s: ", m_IRCData.m_Channel);
+			OutFormat(pOut, pArgument, m_ArgumentCount, 5, aBuf);
 			return;
 		}
 		else if (strcmp(pArgument[1], "332") == 0)
 		{
 			char aBuf[1024];
-			str_format(aBuf, sizeof(aBuf), "*** Topic at %s: %s", m_IRCData.m_Channel, pArgument[4]+1);
-			for(int i = 1; i < m_ArgumentCount-4; i++)
-				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[4+i]);
-			strcpy(pOut, aBuf);
+			str_format(aBuf, sizeof(aBuf), "*** Users at %s: ", m_IRCData.m_Channel);
+			OutFormat(pOut, pArgument, m_ArgumentCount, 5, aBuf);
 			return;
 		}
 		else if (g_Config.m_IRCMotd && strcmp(pArgument[1], "372") == 0)
 		{
 			char aBuf[1024];
-			str_format(aBuf, sizeof(aBuf), "*** %s", pArgument[3]+1);
-			for(int i = 1; i < m_ArgumentCount-3; i++)
-				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[3+i]);
-			strcpy(pOut, aBuf);
+			str_format(aBuf, sizeof(aBuf), "*** ");
+			OutFormat(pOut, pArgument, m_ArgumentCount, 3, aBuf);
 			return;
 		}
 	}
@@ -207,18 +220,15 @@ void IRC::MainParser(char *pOut)
 		if (strcmp(pArgument[1], "PRIVMSG") == 0)
 		{
 			m_Sender = strtok(pArgument[0], "!")+1;
-			//format whole message for output
-			str_format(aBuf, sizeof(aBuf), "%s: %s", m_Sender, pArgument[3]+1);
-			for(int i = 1; i< m_ArgumentCount-3; i++)
-				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[3+i]);
-			strcpy(pOut, aBuf);
+			str_format(aBuf, sizeof(aBuf), "%s: ", m_Sender);
+			OutFormat(pOut, pArgument, m_ArgumentCount, 3, aBuf);
 			return;
 		}
 	}
 	return;
 }
 
-const char *IRC::Init()
+const char *IRC::Init() //TODO: XXLTomate: clean this up
 {
 	char aBuf[128];
 #ifdef WIN32
