@@ -28,7 +28,7 @@ public:
 	bool m_Connected;
 	int m_NewMessages;
 
-	const char *MainParser();
+	void MainParser(char *pOut);
 	const char *Init();
 	void Leave();
 	void Send(const char * pMsg);

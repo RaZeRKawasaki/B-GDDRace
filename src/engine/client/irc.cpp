@@ -118,13 +118,14 @@ void IRC::Topic()
 	SendLine("TOPIC %s", m_IRCData.m_Channel);
 }
 
-const char* IRC::MainParser()
+void IRC::MainParser(char *pOut)
 {
 	char aBuf[1024];
+	strcpy(pOut, "");
 	memset(m_Buffer, 0, sizeof(m_Buffer));
 
 	if (RecvLine(m_Buffer, sizeof(m_Buffer)) == 0)
-		return "";
+		return;
 
 	pToken = strtok(m_Buffer, " ");
 	m_ArgumentCount = 0;
@@ -142,14 +143,15 @@ const char* IRC::MainParser()
 		{
 			SendLine("JOIN %s :%s", m_IRCData.m_Channel, m_IRCData.m_ChannelKey);
 			str_format(aBuf, sizeof(aBuf), "*** Joined %s", m_IRCData.m_Channel);
-			return aBuf;
+			strcpy(pOut, aBuf);
+			return;
 		}
 		else if (strcmp(pArgument[1], "433") == 0)
 		{
 			strncat(m_Nick, "_", 1);
 			SendLine("NICK %s", m_Nick);
 			strcpy(m_IRCData.m_Nick, m_Nick);
-			return "";
+			return;
 		}
 		else if (strcmp(pArgument[1], "353") == 0)
 		{
@@ -157,7 +159,8 @@ const char* IRC::MainParser()
 			str_format(aBuf, sizeof(aBuf), "*** Users at %s: %s", m_IRCData.m_Channel, pArgument[5]+1);
 			for(int i = 1; i < m_ArgumentCount-5; i++)
 				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[5+i]);
-			return aBuf;
+			strcpy(pOut, aBuf);
+			return;
 		}
 		else if (strcmp(pArgument[1], "332") == 0)
 		{
@@ -165,7 +168,8 @@ const char* IRC::MainParser()
 			str_format(aBuf, sizeof(aBuf), "*** Topic at %s: %s", m_IRCData.m_Channel, pArgument[4]+1);
 			for(int i = 1; i < m_ArgumentCount-4; i++)
 				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[4+i]);
-			return aBuf;
+			strcpy(pOut, aBuf);
+			return;
 		}
 		else if (g_Config.m_IRCMotd && strcmp(pArgument[1], "372") == 0)
 		{
@@ -173,7 +177,8 @@ const char* IRC::MainParser()
 			str_format(aBuf, sizeof(aBuf), "*** %s", pArgument[3]+1);
 			for(int i = 1; i < m_ArgumentCount-3; i++)
 				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[3+i]);
-			return aBuf;
+			strcpy(pOut, aBuf);
+			return;
 		}
 	}
 
@@ -182,7 +187,7 @@ const char* IRC::MainParser()
 		if (strcmp(pArgument[0], "PING") == 0)
 		{
 			SendLine("PONG %s", pArgument[1]);
-			return "";
+			return;
 		}
 	}
 
@@ -192,7 +197,8 @@ const char* IRC::MainParser()
 		{
 			m_Sender = strtok(pArgument[0], "!")+1;
 			str_format(aBuf, sizeof(aBuf), "*** %s is now known as %s", m_Sender, pArgument[2]+1);
-			return aBuf;
+			strcpy(pOut, aBuf);
+			return;
 		}
 	}
 
@@ -205,10 +211,11 @@ const char* IRC::MainParser()
 			str_format(aBuf, sizeof(aBuf), "%s: %s", m_Sender, pArgument[3]+1);
 			for(int i = 1; i< m_ArgumentCount-3; i++)
 				str_format(aBuf, sizeof(aBuf), "%s %s", aBuf, pArgument[3+i]);
-			return aBuf;
+			strcpy(pOut, aBuf);
+			return;
 		}
 	}
-	return "";
+	return;
 }
 
 const char *IRC::Init()

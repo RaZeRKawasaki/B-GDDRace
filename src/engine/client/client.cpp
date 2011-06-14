@@ -2511,17 +2511,24 @@ void CClient::IRCResetMessages()
 void CClient::IRCParseThread(void* pClient)
 {
 	CClient *pSelf = (CClient *) pClient;
-
-	const char* temp;
+	char aBuf[1024];
+	char *temp = aBuf;
 	while (pSelf->irc.m_Connected)
 	{
 		thread_sleep(1);
-		temp = pSelf->irc.MainParser();
+		pSelf->irc.MainParser(temp);
+
+		if (temp == NULL)
+			continue;
+//		dbg_msg("IRCDebug", "eins");
+//		dbg_msg("IRCDebug", temp);
 		if (strcmp(temp, "") == 0)
 			continue;
+
 		pSelf->GameClient()->OnIRCLine(temp);
 
 		pSelf->irc.m_NewMessages += 1;
+
 	}
 
 	pSelf->irc.Leave();
