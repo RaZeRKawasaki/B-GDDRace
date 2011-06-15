@@ -2594,7 +2594,7 @@ void CClient::IRCSend(const char *pMsg)
 		else if (strcmp(pMsg, "/away") == 0)
 		{
 	
-	if (IRCGetNewMessages()) //TODO : Test function ...
+	if (IRCGetNewMessages()) //TODO : Test !
 	{
 	irc.Away_bot();
 	

@@ -377,8 +377,34 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 				CTextCursor Cursor;
 				TextRender()->SetCursor(&Cursor, Button.x, Button.y, 12.0f*UI()->Scale(), TEXTFLAG_RENDER|TEXTFLAG_STOP_AT_END);
 				Cursor.m_LineWidth = Button.w;
-				TextRender()->TextEx(&Cursor, pItem->m_aGameType, -1);
-			}
+			// Higlichting !
+               
+					if(str_comp(pItem->m_aGameType, "DM") == 0 || str_comp(pItem->m_aGameType, "TDM") == 0 || str_comp(pItem->m_aGameType, "CTF") == 0)
+						TextRender()->TextColor(0.26f, 0.68f, 0.16f, 1); 
+					if(str_comp(pItem->m_aGameType, "BASKET") == 0 || (str_comp(pItem->m_aGameType, "BALL") == 0 && str_find_nocase(pItem->m_aMap, "basket") != NULL))
+						TextRender()->TextColor(0.94f, 0.59f, 0.21f, 1); 
+					if(str_find_nocase(pItem->m_aGameType, "iDM") || str_find_nocase(pItem->m_aGameType, "iTDM") 
+						|| str_find_nocase(pItem->m_aGameType, "iCTF"))
+						TextRender()->TextColor(0.25f, 0.45f, 0.90f, 1.0f);
+					if(str_find_nocase(pItem->m_aGameType, "iFb"))
+						TextRender()->TextColor(0.40f, 0.60f, 0.95f, 1.0f);
+					if(!str_comp(pItem->m_aGameType, "gCTF"))
+						TextRender()->TextColor(0.62f, 0.32f, 0.11f, 1.0f); 
+					if(str_find_nocase(pItem->m_aGameType, "RACE"))
+					{
+						if(!str_comp(pItem->m_aGameType, "RACE") || !str_comp(pItem->m_aGameType, "Race"))
+							TextRender()->TextColor(0.76f, 0.47f, 0.76f, 1.0f); 
+						else
+							TextRender()->TextColor(0.95f, 0.20f, 0.90f, 1.0f); 
+					}
+					if(!str_comp(pItem->m_aGameType, "FastCap")) 
+						TextRender()->TextColor(0.76f, 0.47f, 0.76f, 1.0f); 
+					TextRender()->TextEx(&Cursor, pItem->m_aGameType, -1);
+					TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
+				}
+			
+					
+			
 
 		}
 	}
