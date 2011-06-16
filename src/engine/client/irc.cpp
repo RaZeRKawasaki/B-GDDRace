@@ -130,10 +130,10 @@ void IRC::OutFormat(char* pOut, char* pArg[IRC_MAX_ARGS], int argumentCount, int
 				else
 					str_format(bBuf, sizeof(bBuf), "%s %s", aBuf, pArg[offset+i]);
 
-			if (argumentCount % 2 == 0)
-				strcpy(pOut, aBuf);
-			else
+			if ((argumentCount-offset) % 2 == 0)
 				strcpy(pOut, bBuf);
+			else
+				strcpy(pOut, aBuf);
 			return;
 }
 
@@ -161,7 +161,7 @@ void IRC::MainParser(char *pOut)
 		if (strcmp(pArgument[1], "001") == 0)
 		{
 			SendLine("JOIN %s :%s", m_IRCData.m_Channel, m_IRCData.m_ChannelKey);
-			str_format(aBuf, sizeof(aBuf), "*** Joined %s", m_IRCData.m_Channel);
+			str_format(aBuf, sizeof(aBuf), "*** You joined %s", m_IRCData.m_Channel);
 			strcpy(pOut, aBuf);
 			return;
 		}
@@ -194,8 +194,7 @@ void IRC::MainParser(char *pOut)
 			return;
 		}
 	}
-
-	if (m_ArgumentCount == 2)
+	else if (m_ArgumentCount == 2)
 	{
 		if (strcmp(pArgument[0], "PING") == 0)
 		{
@@ -203,8 +202,7 @@ void IRC::MainParser(char *pOut)
 			return;
 		}
 	}
-
-	if (m_ArgumentCount == 3)
+	else if (m_ArgumentCount == 3)
 	{
 		if (strcmp(pArgument[1], "NICK") == 0)
 		{
@@ -213,15 +211,38 @@ void IRC::MainParser(char *pOut)
 			strcpy(pOut, aBuf);
 			return;
 		}
+		else if (strcmp(pArgument[1], "PART") == 0)
+		{
+			m_Sender = strtok(pArgument[0], "!")+1;
+			str_format(aBuf, sizeof(aBuf), "*** %s has left %s", m_Sender, pArgument[2]);
+			strcpy(pOut, aBuf);
+			return;
+		}
+		else if (strcmp(pArgument[1], "JOIN") == 0)
+		{
+			m_Sender = strtok(pArgument[0], "!")+1;
+			str_format(aBuf, sizeof(aBuf), "*** %s has joined %s", m_Sender, pArgument[2]+1);
+			strcpy(pOut, aBuf);
+			return;
+		}
 	}
-
-	if (m_ArgumentCount >= 4)
+	else if(m_ArgumentCount >= 4)
 	{
 		if (strcmp(pArgument[1], "PRIVMSG") == 0)
 		{
 			m_Sender = strtok(pArgument[0], "!")+1;
 			str_format(aBuf, sizeof(aBuf), "%s: ", m_Sender);
 			OutFormat(pOut, pArgument, m_ArgumentCount, 3, aBuf);
+			return;
+		}
+	}
+	else
+	{
+		if (strcmp(pArgument[1], "QUIT") == 0) //>=3
+		{
+			m_Sender = strtok(pArgument[0], "!")+1;
+			str_format(aBuf, sizeof(aBuf), "*** %s has quit: ", m_Sender);
+			OutFormat(pOut, pArgument, m_ArgumentCount, 2, aBuf);
 			return;
 		}
 	}
