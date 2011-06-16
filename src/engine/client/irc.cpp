@@ -191,7 +191,7 @@ void IRC::MainParser(char *pOut)
 		else if (strcmp(pArgument[1], "332") == 0)
 		{
 			char aBuf[1024];
-			str_format(aBuf, sizeof(aBuf), "*** Users at %s: ", m_IRCData.m_Channel);
+			str_format(aBuf, sizeof(aBuf), "*** Topic at %s: ", m_IRCData.m_Channel);
 			OutFormat(pOut, pArgument, m_ArgumentCount, 5, aBuf);
 			return;
 		}
@@ -254,6 +254,12 @@ void IRC::MainParser(char *pOut)
 			m_Sender = strtok(pArgument[0], "!")+1;
 			str_format(aBuf, sizeof(aBuf), "*** Mode of %s/%s was set to %s by %s", pArgument[2], pArgument[4], pArgument[3] ,m_Sender);
 			strcpy(pOut, aBuf);
+			return;
+		}
+		else if (strcmp(pArgument[1], "432") == 0)
+		{
+			str_format(aBuf, sizeof(aBuf), "*** %s: ", pArgument[3]);
+			OutFormat(pOut, pArgument, m_ArgumentCount, 4, aBuf);
 			return;
 		}
 	}

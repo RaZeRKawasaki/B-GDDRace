@@ -2560,19 +2560,47 @@ void CClient::IRCSend(const char *pMsg)
 			}
 
 			//set defaults
-			IRC::CIRCData ircTemp = {"nl.quakenet.org",
+			IRC::CIRCData ircTemp = {"irc.kottnet.net",
 							6667,
 							"#XXLDDRace",
 							"",
 							"XXLTest",
 							"IRC Teeworlds Client",};
 
+			//preparing nickname
+			char temp_nick[16];
+			str_copy(temp_nick, g_Config.m_PlayerName, 16);
+
+			if (!isalpha(temp_nick[0])) //first digit has to be a character or TODO: XXLTomate: -_[]{}\|`^
+			{
+				for (int i = strlen(temp_nick) ; i > 0 ; i--)
+					temp_nick[i] = temp_nick[i-1];
+				temp_nick[0] = 'a'; //TODO: XXLTomate: add '_' in front of if first char is a number (doesn't work yet)
+			}
+
+			//check and replace not valid characters
+			for (int i = 0; i < strlen(temp_nick) ; i++)
+			{
+				if (!isalnum(temp_nick[i])
+						&& (temp_nick[i] != '-'
+						|| temp_nick[i] != '_'
+						|| temp_nick[i] != '['
+						|| temp_nick[i] != ']'
+						|| temp_nick[i] != '{'
+						|| temp_nick[i] != '}'
+						|| temp_nick[i] != '\\'
+						|| temp_nick[i] != '|'
+						|| temp_nick[i] != '`'
+						|| temp_nick[i] != '^'))
+					temp_nick[i] = '_';
+			}
+
 			//set setting values
 			str_copy(ircTemp.m_Server, g_Config.m_IRCServer, 32);
 			ircTemp.m_Port = atoi(g_Config.m_IRCPort);
 			str_copy(ircTemp.m_Channel, g_Config.m_IRCChannel, 32);
 			str_copy(ircTemp.m_ChannelKey, g_Config.m_IRCChannelKey, 32);
-			str_copy(ircTemp.m_Nick, g_Config.m_PlayerName, 32);
+			str_copy(ircTemp.m_Nick, temp_nick, 32);
 			str_copy(ircTemp.m_RealName, "IRC Teeworlds Client", 32);
 			irc.m_IRCData = ircTemp;
 
@@ -2616,7 +2644,7 @@ void CClient::IRCSend(const char *pMsg)
 	}
 	else if (irc.m_Connected)
 	{
-		str_format(aBuf, sizeof(aBuf), "%s: %s", irc.m_IRCData.m_Nick, pMsg); //TODO: XXLTomate: its not always the Nick (if used?!)
+		str_format(aBuf, sizeof(aBuf), "%s: %s", irc.m_IRCData.m_Nick, pMsg);
 		irc.Send(pMsg);
 		GameClient()->OnIRCLine(aBuf);
 	}
