@@ -387,7 +387,23 @@ void CMenus::RenderServerbrowserServerList(CUIRect View)
 						|| str_find_nocase(pItem->m_aGameType, "iCTF"))
 						TextRender()->TextColor(0.25f, 0.45f, 0.90f, 1.0f);
 					if(str_find_nocase(pItem->m_aGameType, "iFb"))
-						TextRender()->TextColor(0.40f, 0.60f, 0.95f, 1.0f);
+						TextRender()->TextColor(0.40f, 0.60f, 0.95f, 1.0f);				
+					if(str_find_nocase(pItem->m_aGameType, "CTF#"))
+						TextRender()->TextColor(0.50f, 0.50f, 0.95f, 1.0f);
+					if(str_find_nocase(pItem->m_aGameType, "CTF*"))
+						TextRender()->TextColor(0.80f, 0.80f, 0.95f, 1.0f);
+					if(str_find_nocase(pItem->m_aGameType, "zESC"))
+						TextRender()->TextColor(0.70f, 0.70f, 0.95f, 1.0f);
+					if(str_find_nocase(pItem->m_aGameType, "zCatch"))
+						TextRender()->TextColor(0.70f, 0.70f, 0.95f, 1.0f);
+                     if(str_find_nocase(pItem->m_aGameType, "Catch"))
+						TextRender()->TextColor(0.70f, 0.70f, 0.95f, 1.0f);
+                    if(str_find_nocase(pItem->m_aGameType, "Catch1"))
+						TextRender()->TextColor(0.70f, 0.70f, 0.95f, 1.0f);
+					if(str_find_nocase(pItem->m_aGameType, "BBM"))
+						TextRender()->TextColor(0.22f, 0.21f, 0.95f, 1.0f);
+					if(str_find_nocase(pItem->m_aGameType, "Block"))
+						TextRender()->TextColor(0.66f, 0.21f, 0.95f, 1.0f);
 					if(!str_comp(pItem->m_aGameType, "gCTF"))
 						TextRender()->TextColor(0.62f, 0.32f, 0.11f, 1.0f); 
 					if(str_find_nocase(pItem->m_aGameType, "RACE"))
@@ -899,7 +915,7 @@ void CMenus::RenderServerbrowser(CUIRect MainView)
 			TextRender()->TextColor(1.0f, 0.4f, 0.4f, 1.0f);
 		}
 		else
-			str_format(aBuf, sizeof(aBuf), Localize("Current version: %s"), GAME_VERSION);
+			str_format(aBuf, sizeof(aBuf), Localize("Current version: 2.0 Gold Edition"));
 		UI()->DoLabelScaled(&Button, aBuf, 14.0f, -1);
 		TextRender()->TextColor(1.0f, 1.0f, 1.0f, 1.0f);
 
