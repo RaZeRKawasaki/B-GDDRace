@@ -156,6 +156,15 @@ void IRC::MainParser(char *pOut)
 		m_ArgumentCount++;
 	}
 
+	if (m_ArgumentCount == 2)
+	{
+		if (strcmp(pArgument[0], "PING") == 0)
+		{
+			SendLine("PONG %s", pArgument[1]);
+			return;
+		}
+	}
+
 	if (m_ArgumentCount > 2)
 	{
 		if (strcmp(pArgument[1], "001") == 0)
@@ -194,15 +203,8 @@ void IRC::MainParser(char *pOut)
 			return;
 		}
 	}
-	else if (m_ArgumentCount == 2)
-	{
-		if (strcmp(pArgument[0], "PING") == 0)
-		{
-			SendLine("PONG %s", pArgument[1]);
-			return;
-		}
-	}
-	else if (m_ArgumentCount == 3)
+
+	if (m_ArgumentCount == 3)
 	{
 		if (strcmp(pArgument[1], "NICK") == 0)
 		{
@@ -226,7 +228,19 @@ void IRC::MainParser(char *pOut)
 			return;
 		}
 	}
-	else if(m_ArgumentCount >= 4)
+
+	if(m_ArgumentCount >= 3)
+	{
+		if (strcmp(pArgument[1], "QUIT") == 0)
+		{
+			m_Sender = strtok(pArgument[0], "!")+1;
+			str_format(aBuf, sizeof(aBuf), "*** %s has quit: ", m_Sender);
+			OutFormat(pOut, pArgument, m_ArgumentCount, 2, aBuf);
+			return;
+		}
+	}
+
+	if(m_ArgumentCount >= 4)
 	{
 		if (strcmp(pArgument[1], "PRIVMSG") == 0)
 		{
@@ -235,17 +249,15 @@ void IRC::MainParser(char *pOut)
 			OutFormat(pOut, pArgument, m_ArgumentCount, 3, aBuf);
 			return;
 		}
-	}
-	else
-	{
-		if (strcmp(pArgument[1], "QUIT") == 0) //>=3
+		else if (strcmp(pArgument[1], "MODE") == 0)
 		{
 			m_Sender = strtok(pArgument[0], "!")+1;
-			str_format(aBuf, sizeof(aBuf), "*** %s has quit: ", m_Sender);
-			OutFormat(pOut, pArgument, m_ArgumentCount, 2, aBuf);
+			str_format(aBuf, sizeof(aBuf), "*** Mode of %s/%s was set to %s by %s", pArgument[2], pArgument[4], pArgument[3] ,m_Sender);
+			strcpy(pOut, aBuf);
 			return;
 		}
 	}
+
 	return;
 }
 

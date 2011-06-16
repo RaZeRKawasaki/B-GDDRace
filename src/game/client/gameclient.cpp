@@ -335,7 +335,6 @@ void CGameClient::DispatchInput()
 	Input()->ClearEvents();
 }
 
-
 int CGameClient::OnSnapInput(int *pData)
 {
 	return m_pControls->SnapInput(pData);
