@@ -195,7 +195,7 @@ MACRO_CONFIG_INT(SvGlobalBantime, sv_global_ban_time, 60, 0, 1440, CFGFLAG_SERVE
 MACRO_CONFIG_INT(GfxFullClear, gfx_full_clear, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Show gamelayer", IConsole::CONSOLELEVEL_USER)
 MACRO_CONFIG_INT(GfxMiniTees, gfx_mini_tees, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Cute!!!! Minitees", IConsole::CONSOLELEVEL_USER)
 MACRO_CONFIG_INT(GfxIRC, gfx_irc, 1, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Enable IRC chat", IConsole::CONSOLELEVEL_USER)
-MACRO_CONFIG_STR(IRCServer, irc_server, 32, "de.quakenet.org", CFGFLAG_SAVE|CFGFLAG_CLIENT, "IRC server", IConsole::CONSOLELEVEL_USER)
+MACRO_CONFIG_STR(IRCServer, irc_server, 32, "irc.kottnet.net", CFGFLAG_SAVE|CFGFLAG_CLIENT, "IRC server", IConsole::CONSOLELEVEL_USER)
 MACRO_CONFIG_STR(IRCPort, irc_port, 6, "6667", CFGFLAG_SAVE|CFGFLAG_CLIENT, "IRC port", IConsole::CONSOLELEVEL_USER)
 MACRO_CONFIG_STR(IRCChannel, irc_channel, 32, "#XXLDDRace", CFGFLAG_SAVE|CFGFLAG_CLIENT, "IRC channel", IConsole::CONSOLELEVEL_USER)
 MACRO_CONFIG_STR(IRCChannelKey, irc_channel_key, 32, "", CFGFLAG_SAVE|CFGFLAG_CLIENT, "IRC channel key", IConsole::CONSOLELEVEL_USER)
