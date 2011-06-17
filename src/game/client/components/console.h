@@ -97,5 +97,6 @@ public:
 	virtual void OnRender();
 	virtual void OnMessage(int MsgType, void *pRawMsg);
 	virtual bool OnInput(IInput::CEvent Events);
+	virtual void SetHighlightColor(char* pText);
 };
 #endif

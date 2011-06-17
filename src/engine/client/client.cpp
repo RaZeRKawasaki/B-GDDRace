@@ -2511,6 +2511,11 @@ void CClient::IRCResetMessages()
 	irc.m_NewMessages = 0;
 }
 
+const char* CClient::IRCGetNickName()
+{
+	return irc.m_IRCData.m_Nick;
+}
+
 void CClient::IRCParseThread(void* pClient)
 {
 	CClient *pSelf = (CClient *) pClient;

@@ -338,5 +338,6 @@ public:
 	static void IRCParseThread(void *pClient);
 	virtual int IRCGetNewMessages();
 	virtual void IRCResetMessages();
+	virtual const char* IRCGetNickName();
 };
 #endif

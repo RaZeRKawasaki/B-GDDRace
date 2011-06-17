@@ -148,6 +148,7 @@ public:
 	virtual void IRCSend(const char *pCmd) = 0;
 	virtual int IRCGetNewMessages() = 0;
 	virtual void IRCResetMessages() = 0;
+	virtual const char* IRCGetNickName() = 0;
 };
 
 class IGameClient : public IInterface
