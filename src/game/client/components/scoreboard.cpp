@@ -219,7 +219,8 @@ void CScoreboard::RenderScoreboard(float x, float y, float w, int Team, const ch
 
 	TextRender()->Text(0, NameOffset, y, HeadlineFontsize, Localize("Name"), -1);
 
-	tw = TextRender()->TextWidth(0, HeadlineFontsize, Localize("Clan"), -1);
+
+    tw = TextRender()->TextWidth(0, HeadlineFontsize, Localize("Clan"), -1);
 	TextRender()->Text(0, ClanOffset+ClanLength/2-tw/2, y, HeadlineFontsize, Localize("Clan"), -1);
 
 	tw = TextRender()->TextWidth(0, HeadlineFontsize, Localize("Ping"), -1);
@@ -284,12 +285,22 @@ void CScoreboard::RenderScoreboard(float x, float y, float w, int Team, const ch
 			str_format(aId, sizeof(aId),"%d:", pInfo->m_ClientID);
 			str_append(aId, m_pClient->m_aClients[pInfo->m_ClientID].m_aName,sizeof(aId));
 			Cursor.m_LineWidth = NameLength+3;
-			TextRender()->TextEx(&Cursor, aId, -1);
-		}
+		
+		   			
+		
+			
+			
+		
+}
 		else
 		{
+		
+			
 			Cursor.m_LineWidth = NameLength;
 			TextRender()->TextEx(&Cursor, m_pClient->m_aClients[pInfo->m_ClientID].m_aName, -1);
+		       
+			
+		
 		}
 
 		// clan
