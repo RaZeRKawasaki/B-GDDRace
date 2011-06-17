@@ -515,6 +515,9 @@ void CGameConsole::OnRender()
 				//	just render output from actual backlog page (render bottom up)
 				if(Page == pConsole->m_BacklogActPage)
 				{
+					//IRC highlighting
+					SetHighlightColor(pEntry->m_aText);
+
 					TextRender()->SetCursor(&Cursor, 0.0f, y-OffsetY, FontSize, TEXTFLAG_RENDER);
 					Cursor.m_LineWidth = Screen.w-10.0f;
 					TextRender()->TextEx(&Cursor, pEntry->m_aText, -1);
@@ -529,6 +532,9 @@ void CGameConsole::OnRender()
 				pEntry = pConsole->m_Backlog.First();
 				while(OffsetY > 0.0f && pEntry)
 				{
+					//IRC highlighting
+					SetHighlightColor(pEntry->m_aText);
+
 					TextRender()->SetCursor(&Cursor, 0.0f, y-OffsetY, FontSize, TEXTFLAG_RENDER);
 					Cursor.m_LineWidth = Screen.w-10.0f;
 					TextRender()->TextEx(&Cursor, pEntry->m_aText, -1);
@@ -724,4 +730,20 @@ void CGameConsole::ConClearIRCConsole(IConsole::IResult *pResult, void *pUserDat
 void CGameConsole::ConDumpIRCConsole(IConsole::IResult *pResult, void *pUserData, int ClientID)
 {
 	((CGameConsole *)pUserData)->Dump(CONSOLETYPE_IRC);
+}
+
+void CGameConsole::SetHighlightColor(char* pText)
+{
+	//IRC highlighting TODO: XXLTomate: play a sound (but not in render ;-) )
+	if (m_ConsoleType == CONSOLETYPE_IRC)
+	{
+		char bBuf[255];
+		str_copy(bBuf, pText, 255);
+		char * SelfNick = strtok(bBuf, ":");
+
+		if(str_find_nocase(pText, Client()->IRCGetNickName()) && str_comp(SelfNick, Client()->IRCGetNickName()))
+			TextRender()->TextColor(229.0f/255.0f,185.0f/255.0f,4.0f/255.0f,0.85f); //the orange color from PossibleCommandsRenderCallback
+		else
+			TextRender()->TextColor(1,1,1,1);
+	}
 }
