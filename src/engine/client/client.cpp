@@ -51,6 +51,7 @@
 //XXLDDRace
 #include "irc.h"
 #include "string.h"
+#include <cctype>
 
 void CGraph::Init(float Min, float Max)
 {
